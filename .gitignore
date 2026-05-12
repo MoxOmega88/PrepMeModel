@@ -1,0 +1,66 @@
+# ── Secrets (NEVER commit these) ─────────────────────────────────────────────
+.env
+.env.local
+.env.production
+.env.development
+backend/.env
+frontend/.env.local
+*.env
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+.venv/
+env/
+.env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# ── Database (generated at runtime) ──────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+prepmeai.db
+
+# ── Node / Next.js ────────────────────────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.vercel/
+
+# ── Streamlit ─────────────────────────────────────────────────────────────────
+.streamlit/secrets.toml
+
+# ── PDF / Media (large files, share via Drive/S3) ────────────────────────────
+*.pdf
+*.wav
+*.mp3
+*.mp4
+
+# ── Vector DB / Generated data ────────────────────────────────────────────────
+data/
+chroma_db/
+*.faiss
+*.index
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Old/backup files ─────────────────────────────────────────────────────────
+*.old
+*.bak
+*.old.tsx
+*.old.py
