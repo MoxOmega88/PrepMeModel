@@ -13,6 +13,13 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# ── Authentication Check ──────────────────────────────────────────────────────
+if 'student' not in st.session_state or not st.session_state.student:
+    st.warning("🔒 Please sign in to access PrepMeAI")
+    if st.button("Go to Sign In"):
+        st.switch_page("pages/0_Auth.py")
+    st.stop()
+
 # ── Global light-theme CSS ─────────────────────────────────────────────────────
 st.markdown("""
 <style>
