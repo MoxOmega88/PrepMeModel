@@ -119,11 +119,22 @@ export default function EnhancedTutorPage() {
   }
 
   const toggleVoiceInput = () => {
-    if (isListening) {
-      recognitionRef.current?.stop()
-    } else {
-      recognitionRef.current?.start()
-      setIsListening(true)
+    if (!recognitionRef.current) {
+      alert("Speech recognition is not supported in your browser. Please use Chrome or Edge.")
+      return
+    }
+
+    try {
+      if (isListening) {
+        recognitionRef.current.stop()
+        setIsListening(false)
+      } else {
+        recognitionRef.current.start()
+        setIsListening(true)
+      }
+    } catch (error) {
+      console.error("Error toggling speech recognition:", error)
+      setIsListening(false)
     }
   }
 

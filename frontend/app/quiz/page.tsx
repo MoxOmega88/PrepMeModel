@@ -138,6 +138,15 @@ export default function EnhancedQuizPage() {
         }
         setAnswer(prev => prev + " " + transcript)
       }
+
+      recognitionRef.current.onend = () => {
+        setIsRecording(false)
+      }
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error("Speech recognition error:", event.error)
+        setIsRecording(false)
+      }
     }
   }, [])
 
@@ -245,12 +254,22 @@ export default function EnhancedQuizPage() {
   }
 
   const toggleRecording = () => {
-    if (isRecording) {
-      recognitionRef.current?.stop()
+    if (!recognitionRef.current) {
+      alert("Speech recognition is not supported in your browser. Please use Chrome or Edge.")
+      return
+    }
+
+    try {
+      if (isRecording) {
+        recognitionRef.current.stop()
+        setIsRecording(false)
+      } else {
+        recognitionRef.current.start()
+        setIsRecording(true)
+      }
+    } catch (error) {
+      console.error("Error toggling speech recognition:", error)
       setIsRecording(false)
-    } else {
-      recognitionRef.current?.start()
-      setIsRecording(true)
     }
   }
 

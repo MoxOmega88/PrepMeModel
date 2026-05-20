@@ -86,6 +86,20 @@ def render_quiz_page():
         </div>""",
         unsafe_allow_html=True,
     )
+    
+    # Read question aloud button
+    col1, col2 = st.columns([1, 5])
+    with col1:
+        if st.button("🔊 Read Question", key=f"read_q_{idx}"):
+            try:
+                import pyttsx3
+                engine = pyttsx3.init()
+                engine.setProperty('rate', 150)
+                engine.say(item['question'])
+                engine.runAndWait()
+                st.success("✅ Played!")
+            except Exception as e:
+                st.error(f"TTS error: {e}")
 
     # Already evaluated?
     current_eval = st.session_state.evaluations.get(idx)

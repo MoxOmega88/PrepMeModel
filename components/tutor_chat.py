@@ -63,9 +63,25 @@ def render_tutor_chat():
         </div>
         """, unsafe_allow_html=True)
 
-    for msg in history:
+    for i, msg in enumerate(history):
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
+            
+            # Add Read Aloud button for assistant messages
+            if msg["role"] == "assistant":
+                col1, col2 = st.columns([1, 5])
+                with col1:
+                    if st.button("🔊 Read Aloud", key=f"tts_{i}"):
+                        try:
+                            import pyttsx3
+                            engine = pyttsx3.init()
+                            engine.setProperty('rate', 150)
+                            engine.say(msg["content"])
+                            engine.runAndWait()
+                            st.success("✅ Played!")
+                        except Exception as e:
+                            st.error(f"TTS error: {e}")
+            
             if msg.get("citations"):
                 st.caption("📚 Sources: " + ", ".join(msg["citations"]))
             if msg.get("followup"):
@@ -76,9 +92,40 @@ def render_tutor_chat():
                 )
 
     # ── Input ──────────────────────────────────────────────────────────────────
-    user_input = st.chat_input("Ask your tutor…")
-
-    if user_input:
+    st.markdown("### 💬 Ask Your Question")
+    
+    col1, col2 = st.columns([4, 1])
+    
+    with col1:
+        user_input = st.text_input("Type your question:", key="text_input", label_visibility="collapsed", placeholder="Ask your tutor…")
+    
+    with col2:
+        use_voice = st.button("🎤 Voice", help="Record your question")
+    
+    # Voice input handling
+    if use_voice:
+        st.info("🎤 Recording... Speak your question now!")
+        try:
+            import speech_recognition as sr
+            recognizer = sr.Recognizer()
+            with sr.Microphone() as source:
+                st.write("Listening...")
+                recognizer.adjust_for_ambient_noise(source, duration=0.5)
+                audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
+                st.write("Processing...")
+                user_input = recognizer.recognize_google(audio)
+                st.success(f"✅ You said: {user_input}")
+        except sr.WaitTimeoutError:
+            st.error("⏱️ No speech detected. Please try again.")
+            user_input = None
+        except sr.UnknownValueError:
+            st.error("❌ Could not understand audio. Please try again.")
+            user_input = None
+        except Exception as e:
+            st.error(f"❌ Voice input error: {e}")
+            user_input = None
+    
+    if st.button("📤 Send", type="primary") and user_input:
         history.append({"role": "user", "content": user_input})
         st.session_state.chat_history = history
         st.rerun()
